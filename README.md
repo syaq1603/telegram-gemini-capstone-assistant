@@ -1,7 +1,5 @@
 # 🤖 This is a Gemini Telegram Knowledge Assistant.
 
-# 🤖 Telegram Gemini Capstone Bot
-
 This is a **Telegram bot powered by Google Gemini** designed to help users with their **financial queries**. It integrates conversational AI with document analysis and PDF generation to create a smart and interactive financial assistant.
 
 ---
@@ -32,43 +30,54 @@ This is a **Telegram bot powered by Google Gemini** designed to help users with 
 - python-telegram-bot for Telegram integration
 - PyMuPDF and docx2txt for file parsing
 
----
+-----------------------------------------------------------------------------------------------------
 
-# ⚙️ Setup Instructions
+# 📚 Project Structure (Full Stack)
 
-### 1. Clone the repo & install dependencies
-
-git clone https://github.com/yourusername/gemini-telegram-assistant.git
-cd gemini-telegram-assistant
-pip install -r requirements.txt
-
-# Configure .env file
-Create a .env file in the root directory:
-GOOGLE_API_KEY=your_gemini_api_key
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-
-## 🧪 Run Locally
-python bot.py
-
-## Send messages or upload documents to your bot on Telegram.
-
-# ☁️ Deployment (Render)
-1. Create requirements.txt and Procfile
-Already included.
-
-# 📚 Project Structure
-
-telegram-gemini-bot/
+telegram_gemini_bot/
+├── app.py                 # Flask backend entry (webhook server)
+├── bot.py                 # Handles Telegram logic (text, files, replies)
+├── assistant.py           # Gemini prompt generation
+├── file_handler.py        # PDF/image content extraction
+├── document_loader.py     # Local file (PDF, DOCX, TXT, CSV) parsing
 │
-├── main.py                # Webhook + bot setup
-├── handlers.py            # Message/file handlers
-├── assistant.py           # Gemini logic
-├── document_loader.py     # Extracts text from PDF/CSV/image
-├── pdf_generator.py       # Creates a PDF from bot responses
-├── image_generator.py     # (Optional) Gemini image generation
-├── requirements.txt
-├── .env
-└── README.md
+├── templates/             # Frontend HTML pages for web routes
+│   ├── index.html
+│   ├── main.html
+│   ├── gemini.html
+│   ├── gemini_reply.html
+│   ├── telegram.html
+│   ├── logs.html
+│   └── del_logs.html
+│
+├── static/                # (Optional) CSS, images, JS
+│   └── styles.css
+│
+├── requirements.txt       # Dependencies
+├── .env                   # Secret keys (ignored by Git)
+├── .gitignore             # Keeps sensitive/unwanted files out of Git
+└── README.md              # Project overview
+
+✅ Backend (Flask):
+The backend includes:
+
+- bot.py, assistant.py → processes user inputs
+
+- Gemini API → generates answers
+
+- Flask → handles routing and webhooks
+
+- file_handler.py, document_loader.py → extract text
+
+✅ The Frontend in this project:
+Two frontends:
+Interface Type	Description
+
+🟦 Telegram UI	User-facing interface (chat input/output)
+
+🟩 Flask web interface	HTML pages served by app.py (e.g. index.html)
+
+---------------------------------------------------------------------------------------------------------------------
 
 ## Step-by-Step Implementation Plan
 

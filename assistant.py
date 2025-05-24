@@ -1,44 +1,39 @@
-import google.generativeai as genai
-from sentence_transformers import SentenceTransformer
-import faiss
-import numpy as np
+# assistant.py
+
 import os
+import google.generativeai as genai
 from dotenv import load_dotenv
+import markdown
 
-# Load keys from .env
 load_dotenv()
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-pro")
 
-# Gemini model
-gemini_model = genai.GenerativeModel("gemini-pro")
+system_prompt = """
+You are a helpful assistant with expertise in finance, economics, investing, and financial markets.
 
-# Embedding model
-embedder = SentenceTransformer("all-MiniLM-L6-v2")
+Only answer questions that are directly related to these topics.
 
-# In-memory FAISS index (re-initialize on every run)
-embedding_dim = 384
-faiss_index = faiss.IndexFlatL2(embedding_dim)
-documents = []
+If a user asks something unrelated — such as programming, movies, recipes, or personal issues — respond with:
+"I'm only able to help with questions about finance, economics, investing, and financial markets."
+"""
 
-def add_document(text, metadata=None):
-    """Add a document to FAISS and local store"""
-    embedding = embedder.encode([text])[0]
-    faiss_index.add(np.array([embedding]))
-    documents.append((text, metadata))
+def generate_financial_reply(prompt: str) -> str:
+    full_prompt = [
+        {"role": "system", "parts": [system_prompt.strip()]},
+        {"role": "user", "parts": [prompt.strip()]}
+    ]
+    try:
+        response = model.generate_content(full_prompt)
+        raw_text = response.text or "I'm only able to help with questions about finance, economics, investing, and financial markets."
+        html_output = markdown.markdown(raw_text, extensions=["fenced_code", "codehilite"])
 
-def retrieve_similar(query, top_k=3):
-    """Retrieve top-k similar document chunks"""
-    query_vec = embedder.encode([query])[0]
-    D, I = faiss_index.search(np.array([query_vec]), top_k)
-    return [documents[i][0] for i in I[0]]
+        print("\n--- QUERY LOG ---")
+        print(f"User Prompt: {prompt}")
+        print(f"Gemini Response: {raw_text}")
+        print("--- END LOG ---\n")
 
-def ask_gemini(question, context=None):
-    """Generate a response using Gemini"""
-    prompt = f"{context}\n\nQuestion: {question}" if context else question
-    response = gemini_model.generate_content(prompt)
-    return response.text
-
-def rag_ask(question):
-    """RAG-style Q&A: retrieve + ask Gemini"""
-    context = "\n\n".join(retrieve_similar(question))
-    return ask_gemini(question, context)
+        return html_output
+    except Exception as e:
+        print(f"Gemini Error: {e}")
+        return f"⚠️ Error: {str(e)}"

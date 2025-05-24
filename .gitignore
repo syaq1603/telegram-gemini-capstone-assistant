@@ -1,8 +1,18 @@
-.env
+# .gitignore
+
+# Ignore virtual environment
+venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.db
+
+# Ignore environment secrets
+.env
+
+# Ignore logs and temporary files
 *.log
 *.tmp
+*.swp
+.DS_Store
+
+# Ignore PDFs or generated output
+*.pdf

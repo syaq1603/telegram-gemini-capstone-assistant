@@ -1,0 +1,18 @@
+<!-- templates/gemini.html -->
+{% extends "base.html" %}
+{% block title %}Ask Gemini{% endblock %}
+
+{% block content %}
+<h2>Ask a Financial Question</h2>
+
+<form action="/gemini_reply" method="POST" enctype="multipart/form-data">
+    <label for="q">Your Question:</label><br>
+    <textarea name="q" rows="5" cols="60" required></textarea><br><br>
+
+    <label for="file">Optional: Upload a PDF or image for analysis</label><br>
+    <input type="file" name="file" accept=".pdf, .jpg, .jpeg, .png"><br><br>
+
+    <button type="submit">Submit to Gemini</button>
+</form>
+{% endblock %}
+

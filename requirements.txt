@@ -1,7 +1,10 @@
-python-telegram-bot==20.0
-google-generativeai
-sentence-transformers
-faiss-cpu
+# requirements.txt
+
+flask
+requests
 python-dotenv
-docx2txt
+google-generativeai
 PyMuPDF
+pytesseract
+Pillow
+
