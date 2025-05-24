@@ -1,0 +1,13 @@
+<!-- templates/logs.html -->
+{% extends "base.html" %}
+{% block title %}User Logs{% endblock %}
+
+{% block content %}
+<h2>User Interaction Logs</h2>
+<pre style="background:#f8f8f8; padding:10px; white-space:pre-wrap;">
+{{ r }}
+</pre>
+<br>
+<a href="/main">Back to Main Menu</a> |
+<a href="/del_logs">Delete All Logs</a>
+{% endblock %}
