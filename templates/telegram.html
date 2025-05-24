@@ -1,0 +1,19 @@
+<!-- templates/telegram.html -->
+
+{% extends "base.html" %}
+{% block title %}Telegram Bot Status{% endblock %}
+
+{% block content %}
+<h2>Telegram Bot Status</h2>
+<p>{{ status }}</p>
+
+<form action="/start_telegram" method="post">
+    <button type="submit">Start Telegram Bot</button>
+</form>
+<br>
+<form action="/stop_telegram" method="post">
+    <button type="submit">Stop Telegram Bot</button>
+</form>
+<br>
+<a href="/main">Back to Main Menu</a>
+{% endblock %}

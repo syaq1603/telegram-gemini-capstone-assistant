@@ -1,18 +1,22 @@
 <!-- templates/gemini_reply.html -->
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Gemini's Reply</title>
-</head>
-<body>
-    <h2>Gemini's Answer</h2>
-    <div style="border: 1px solid #ccc; padding: 10px;">
-        {{ r | safe }}
-    </div>
+<!-- templates/gemini_reply.html -->
+{% extends "base.html" %}
+{% block title %}Gemini's Reply{% endblock %}
 
-    <br>
-    <a href="/gemini">Ask another question</a>
-</body>
-</html>
+{% block content %}
+<h2>Gemini's Answer</h2>
+<div style="border: 1px solid #ccc; padding: 10px;">
+    {{ r | safe }}
+</div>
+
+{% if file_text %}
+<hr>
+<h3>Extracted Text from File:</h3>
+<pre style="background:#f8f8f8; padding:10px; white-space:pre-wrap;">{{ file_text }}</pre>
+{% endif %}
+
+<br>
+<a href="/gemini">Ask another question</a>
+{% endblock %}
+
