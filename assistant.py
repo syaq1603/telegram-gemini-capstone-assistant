@@ -18,7 +18,7 @@ If a user asks something unrelated — such as programming, movies, recipes, or 
 "I'm only able to help with questions about finance, economics, investing, and financial markets."
 """
 
-def generate_financial_reply(prompt: str) -> str:
+def generate_financial_reply(prompt: str, as_html: bool = True) -> str:
     full_prompt = [
         {"role": "system", "parts": [system_prompt.strip()]},
         {"role": "user", "parts": [prompt.strip()]}
@@ -33,7 +33,8 @@ def generate_financial_reply(prompt: str) -> str:
         print(f"Gemini Response: {raw_text}")
         print("--- END LOG ---\n")
 
-        return html_output
+        return html_output if as_html else raw_text
     except Exception as e:
         print(f"Gemini Error: {e}")
         return f"⚠️ Error: {str(e)}"
+
