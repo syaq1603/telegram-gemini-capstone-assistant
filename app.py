@@ -1,7 +1,6 @@
 # app.py
 
 from flask import Flask, request, redirect, render_template, session, url_for
-from bot import handle_telegram_webhook
 import sqlite3
 from datetime import datetime, timezone
 import os
@@ -11,6 +10,9 @@ from assistant import generate_financial_reply
 
 app = Flask(__name__)
 app.secret_key = "replace_this_with_a_secure_key"
+
+# Ensure this environment variable is set correctly with the public URL of your app
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 @app.route("/")
 def index():
@@ -66,17 +68,16 @@ def del_logs():
 
 @app.route("/telegram_page", methods=["GET", "POST"])
 def telegram_page():
-    domain_url = os.getenv("WEBHOOK_URL")
+    # Ensure the webhook URL is set correctly for your environment
     webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/deleteWebhook"
-    requests.post(webhook_url, json={"url": domain_url, "drop_pending_updates": True})
+    response = requests.post(webhook_url, json={"url": WEBHOOK_URL, "drop_pending_updates": True})
     status = "The telegram bot is not running. Click the button below to start it."
     return render_template("telegram.html", status=status)
 
 @app.route("/start_telegram", methods=["POST"])
 def start_telegram():
-    domain_url = os.getenv("WEBHOOK_URL")
-    webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/setWebhook?url={domain_url}/telegram"
-    response = requests.post(webhook_url, json={"url": domain_url, "drop_pending_updates": True})
+    webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/setWebhook?url={WEBHOOK_URL}/telegram"
+    response = requests.post(webhook_url, json={"url": WEBHOOK_URL, "drop_pending_updates": True})
     status = "The telegram bot is running. Please check with the telegram bot." if response.status_code == 200 else "Failed to start the telegram bot."
     return render_template("telegram.html", status=status)
 
@@ -98,8 +99,41 @@ def telegram():
     handle_telegram_webhook(update)
     return "ok", 200
 
+def handle_telegram_webhook(update):
+    """Handles incoming Telegram messages and sends responses."""
+    try:
+        chat_id = update['message']['chat']['id']
+        user_message = update['message']['text']
+        print(f"Received message: {user_message} from chat_id: {chat_id}")
+
+        # Generate a response for the received message
+        response = generate_telegram_reply(user_message)
+        
+        # Send the response back to the user
+        send_telegram_message(chat_id, response)
+    except Exception as e:
+        print(f"Error processing update: {e}")
+
+def generate_telegram_reply(message):
+    """Generates a reply based on the user message."""
+    # You can add custom logic here to handle different types of messages
+    if "hello" in message.lower():
+        return "Hello! How can I assist you today?"
+    else:
+        return f"You said: {message}"
+
+def send_telegram_message(chat_id, text):
+    """Sends a message to the specified chat ID."""
+    telegram_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/sendMessage"
+    payload = {'chat_id': chat_id, 'text': text}
+    response = requests.post(telegram_url, data=payload)
+
+    if response.status_code != 200:
+        print(f"Failed to send message: {response.text}")
+
 if __name__ == "__main__":
     print("✅ Flask is starting...")
     app.run(debug=True, port=5000)
+
 
 
