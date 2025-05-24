@@ -1,9 +1,23 @@
-<!-- templates/del_logs.html -->
-{% extends "base.html" %}
-{% block title %}Logs Deleted{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs Deleted - FIN ADVISOR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Logs Deleted</h1>
+        <p>All user session logs have been successfully deleted.</p>
 
-{% block content %}
-<h2>✅ All user logs have been deleted.</h2>
-<br>
-<a href="/main">Back to Main Menu</a>
-{% endblock %}
+        <br>
+
+        <a href="/logs">View Logs</a> <!-- Link to view the logs (if any new logs are added) -->
+
+        <br><br>
+        <a href="/gemini">Back to Main</a> <!-- Link to go back to the main page -->
+    </div>
+</body>
+</html>
+

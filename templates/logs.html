@@ -1,13 +1,43 @@
-<!-- templates/logs.html -->
-{% extends "base.html" %}
-{% block title %}User Logs{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Logs - FIN ADVISOR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>User Session Logs</h1>
 
-{% block content %}
-<h2>User Interaction Logs</h2>
-<pre style="background:#f8f8f8; padding:10px; white-space:pre-wrap;">
-{{ r }}
-</pre>
-<br>
-<a href="/main">Back to Main Menu</a> |
-<a href="/del_logs">Delete All Logs</a>
-{% endblock %}
+        <h2>List of all users who have interacted with the assistant</h2>
+
+        {% if r %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in r %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No logs available.</p>
+        {% endif %}
+
+        <br>
+        <a href="/del_logs">Delete All Logs</a> <!-- Link to delete logs -->
+
+        <br><br>
+        <a href="/gemini">Back to Main</a> <!-- Link to return to the main page -->
+    </div>
+</body>
+</html>

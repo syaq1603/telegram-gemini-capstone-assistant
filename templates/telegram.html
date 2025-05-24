@@ -1,19 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta name ="viewport" content ="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Telegram Bot - FIN ADVISOR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h2>FinGPT in Telegram</h2>
-        <h4>{{status}}</h4>
-        <form action="/start_telegram" method="post">         
-            <input type="submit" value="Start">
+        <h1>Manage Telegram Bot</h1>
+        <h2>Status: {{ status }}</h2> <!-- Displays the current status of the bot -->
+
+        <form action="/start_telegram" method="post">
+            <input type="submit" value="Start Telegram Bot">
         </form>
-        <form action="/stop_telegram" method="post">         
-            <input type="submit" value="Stop">
+
+        <br>
+
+        <form action="/stop_telegram" method="post">
+            <input type="submit" value="Stop Telegram Bot">
         </form>
-        <form action="/home" method="post">         
-            <input type="submit" value="Main">
-        </form>
+
+        <br>
+
+        <a href="/gemini">Back to Main</a> <!-- Link to go back to the main page -->
     </div>
 </body>
+</html>

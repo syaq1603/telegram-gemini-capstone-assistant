@@ -1,18 +1,40 @@
-<!-- templates/gemini.html -->
-{% extends "base.html" %}
-{% block title %}Ask Gemini{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Gemini - Financial Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to FIN ADVISOR</h1>
+        <h2>Ask your financial question or upload a document for analysis</h2>
 
-{% block content %}
-<h2>Ask a Financial Question</h2>
+        <div class="content">
+            <!-- Form for asking questions -->
+            <form action="/gemini_reply" method="POST">
+                <label for="q">Enter your question:</label><br>
+                <input type="text" id="q" name="q" placeholder="e.g., What is inflation?" required>
+                <input type="submit" value="Ask">
+            </form>
 
-<form action="/gemini_reply" method="POST" enctype="multipart/form-data">
-    <label for="q">Your Question:</label><br>
-    <textarea name="q" rows="5" cols="60" required></textarea><br><br>
+            <br>
 
-    <label for="file">Optional: Upload a PDF or image for analysis</label><br>
-    <input type="file" name="file" accept=".pdf, .jpg, .jpeg, .png"><br><br>
+            <!-- Form for uploading documents -->
+            <form action="/gemini_reply" method="POST" enctype="multipart/form-data">
+                <label for="file">Upload a document:</label><br>
+                <input type="file" id="file" name="file" accept=".pdf,.csv,.jpg,.jpeg,.png" required>
+                <input type="submit" value="Upload">
+            </form>
 
-    <button type="submit">Submit to Gemini</button>
-</form>
-{% endblock %}
+            <br>
+
+            <a href="/telegram_page">Manage Telegram Bot</a> <!-- Link to manage the Telegram bot -->
+        </div>
+
+        <h4>{{ status }}</h4> <!-- Display any status messages here -->
+    </div>
+</body>
+</html>
 
