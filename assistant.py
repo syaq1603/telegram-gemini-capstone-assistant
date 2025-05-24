@@ -19,12 +19,9 @@ If a user asks something unrelated — such as programming, movies, recipes, or 
 """
 
 def generate_financial_reply(prompt: str, as_html: bool = True) -> str:
-    full_prompt = [
-        {"role": "system", "parts": [system_prompt.strip()]},
-        {"role": "user", "parts": [prompt.strip()]}
-    ]
+    full_input = f"{system_prompt.strip()}\n\nUser Question:\n{prompt.strip()}"
     try:
-        response = model.generate_content(full_prompt)
+        response = model.generate_content(full_input)
         raw_text = response.text or "I'm only able to help with questions about finance, economics, investing, and financial markets."
         html_output = markdown.markdown(raw_text, extensions=["fenced_code", "codehilite"])
 
@@ -37,4 +34,3 @@ def generate_financial_reply(prompt: str, as_html: bool = True) -> str:
     except Exception as e:
         print(f"Gemini Error: {e}")
         return f"⚠️ Error: {str(e)}"
-
