@@ -11,7 +11,8 @@ WEBHOOK_URL = "https://c4c1-118-200-144-21.ngrok-free.app"  # Use your ngrok URL
 
 # Initialize the Flask app
 app = Flask(__name__)
-app.secret_key = "replace_this_with_a_secure_key"
+app.secret_key = os.urandom(24)
+
 
 # Ensure this environment variable is set correctly with the public URL of your app
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
