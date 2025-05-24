@@ -5,9 +5,8 @@ import sqlite3
 from datetime import datetime, timezone
 import os
 import requests
-from handler import extract_text_from_file
-from assistant import generate_financial_reply
 
+# Initialize the Flask app
 app = Flask(__name__)
 app.secret_key = "replace_this_with_a_secure_key"
 
@@ -68,7 +67,6 @@ def del_logs():
 
 @app.route("/telegram_page", methods=["GET", "POST"])
 def telegram_page():
-    # Ensure the webhook URL is set correctly for your environment
     webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/deleteWebhook"
     response = requests.post(webhook_url, json={"url": WEBHOOK_URL, "drop_pending_updates": True})
     status = "The telegram bot is not running. Click the button below to start it."
@@ -76,25 +74,20 @@ def telegram_page():
 
 @app.route("/start_telegram", methods=["GET", "POST"])
 def start_telegram():
-    # Construct the webhook URL
     webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/setWebhook?url={WEBHOOK_URL}/telegram"
     
     # Print the webhook URL for debugging
     print("Setting webhook to:", webhook_url)
     
-    # Send the request to set the webhook
     response = requests.post(webhook_url, json={"url": WEBHOOK_URL, "drop_pending_updates": True})
     
     # Print the response from Telegram for debugging
     print(f"Telegram response status: {response.status_code}")
     print(f"Telegram response content: {response.text}")
     
-    # Check the response status
     status = "The telegram bot is running. Please check with the telegram bot." if response.status_code == 200 else "Failed to start the telegram bot."
     
-    # Render the status page
     return render_template("telegram.html", status=status)
-
 
 @app.route("/stop_telegram", methods=["POST"])
 def stop_telegram():
@@ -115,7 +108,6 @@ def telegram():
     # Log the incoming request to see the structure
     print(f"Received update: {update}")
     
-    # Handle the webhook data
     handle_telegram_webhook(update)
     
     return "ok", 200
@@ -138,7 +130,6 @@ def handle_telegram_webhook(update):
 def generate_telegram_reply(message):
     print(f"Generating response for message: {message}")
     
-    # Simple reply for testing
     if "hello" in message.lower():
         return "Hello! How can I assist you today?"
     else:
@@ -151,8 +142,12 @@ def send_telegram_message(chat_id, text):
     # Send the message to Telegram
     response = requests.post(telegram_url, data=payload)
 
-    # Debugging: Check the response from Telegram
     if response.status_code != 200:
         print(f"Error sending message: {response.text}")
     else:
         print(f"Successfully sent message: {text} to chat_id: {chat_id}")
+
+if __name__ == "__main__":
+    print("Starting Flask app...")
+    app.run(debug=True, port=5000)
+
