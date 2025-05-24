@@ -1,13 +1,11 @@
-<!-- templates/telegram.html -->
-
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name ="viewport" content ="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
 </head>
 <body>
     <div class="container">
-        <h2>Financial Advisor Chatbot in Telegram</h2>
-        <h4>{{ status }}</h4>
+        <h2>FinGPT in Telegram</h2>
+        <h4>{{status}}</h4>
         <form action="/start_telegram" method="post">         
             <input type="submit" value="Start">
         </form>
@@ -19,4 +17,3 @@
         </form>
     </div>
 </body>
-
