@@ -6,7 +6,7 @@ import sqlite3
 from datetime import datetime, timezone
 import os
 import requests
-from file_handler import extract_text_from_file
+from handler import extract_text_from_file
 from assistant import generate_financial_reply
 
 app = Flask(__name__)
