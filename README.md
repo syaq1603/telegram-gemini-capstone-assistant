@@ -1,8 +1,18 @@
-# 🤖 Gemini Telegram Knowledge Assistant
+# 🤖 This is a Gemini Telegram Knowledge Assistant.
 
-A Telegram bot that uses **Google Gemini** to answer user questions from uploaded documents (PDFs, DOCX). Combines Retrieval-Augmented Generation (RAG) with natural language queries.
+# 🤖 Telegram Gemini Capstone Bot
+
+This is a **Telegram bot powered by Google Gemini** designed to help users with their **financial queries**. It integrates conversational AI with document analysis and PDF generation to create a smart and interactive financial assistant.
 
 ---
+
+## ✨ Features
+
+- 🧠 **Answer financial questions** — from basic terms to deeper insights
+- 📄 **Analyze uploaded PDFs and CSVs** — such as reports, tables, or statements
+- 🖼️ **Understand image-based content** (charts, graphs, screenshots)
+- 📥 **Generate a PDF** of the bot's latest response by typing:  
+
 
 # 🚀 Features
 
@@ -46,33 +56,33 @@ python bot.py
 1. Create requirements.txt and Procfile
 Already included.
 
-## Push to GitHub
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/yourusername/gemini-telegram-assistant.git
-git push -u origin main
-
-#3. Go to https://render.com
-Create a new Web Service
-
-Connect your GitHub repo
-
-Set Start Command: python bot.py
-
-Add environment variables from .env 
-
 # 📚 Project Structure
 
-gemini-telegram-assistant/
+telegram-gemini-bot/
 │
-├── bot.py              # Telegram bot logic
-├── assistant.py        # Gemini Q&A + FAISS search
-├── document_loader.py  # Extract text from PDF/DOCX
-├── .env                # API keys (not tracked)
+├── main.py                # Webhook + bot setup
+├── handlers.py            # Message/file handlers
+├── assistant.py           # Gemini logic
+├── document_loader.py     # Extracts text from PDF/CSV/image
+├── pdf_generator.py       # Creates a PDF from bot responses
+├── image_generator.py     # (Optional) Gemini image generation
 ├── requirements.txt
-├── Procfile
+├── .env
 └── README.md
+
+## Step-by-Step Implementation Plan
+
+- main.py: Flask-based webhook server for Telegram
+
+- handlers.py: Handles messages, file uploads, and /generate_pdf
+
+- assistant.py: Sends queries to Gemini and returns response
+
+- pdf_generator.py: Converts text replies to a downloadable PDF
+
+- image_generator.py (optional): Uses a model or fallback method
+
+- Webhook-ready deployment (Render or Railway)
 
 ## 🧠 Example Query
 Upload a document
