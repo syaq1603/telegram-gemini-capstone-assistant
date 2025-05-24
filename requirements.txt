@@ -1,0 +1,7 @@
+python-telegram-bot==20.0
+google-generativeai
+sentence-transformers
+faiss-cpu
+python-dotenv
+docx2txt
+PyMuPDF
