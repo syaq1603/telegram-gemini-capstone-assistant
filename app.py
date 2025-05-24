@@ -6,6 +6,9 @@ from datetime import datetime, timezone
 import os
 import requests
 
+# Set the correct public URL for ngrok
+WEBHOOK_URL = "https://c4c1-118-200-144-21.ngrok-free.app"  # Use your ngrok URL here
+
 # Initialize the Flask app
 app = Flask(__name__)
 app.secret_key = "replace_this_with_a_secure_key"
