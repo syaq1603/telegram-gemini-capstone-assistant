@@ -77,10 +77,19 @@ def del_logs():
 
 @app.route("/telegram_page", methods=["GET", "POST"])
 def telegram_page():
-    webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/deleteWebhook"
-    response = requests.post(webhook_url, json={"url": WEBHOOK_URL, "drop_pending_updates": True})
-    status = "The telegram bot is not running. Click the button below to start it."
+    # Set the webhook URL for Telegram (with your ngrok URL)
+    webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/setWebhook?url={WEBHOOK_URL}/telegram"
+    
+    # Set the webhook for the bot
+    response = requests.post(webhook_url)
+    
+    if response.status_code == 200:
+        status = "The telegram bot is running. Please check with the telegram bot."
+    else:
+        status = f"Failed to start the telegram bot. {response.text}"
+    
     return render_template("telegram.html", status=status)
+
 
 @app.route("/start_telegram", methods=["GET", "POST"])
 def start_telegram():
