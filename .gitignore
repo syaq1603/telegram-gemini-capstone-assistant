@@ -1,18 +1,26 @@
-# .gitignore
-
-# Ignore virtual environment
-venv/
-__pycache__/
-*.pyc
-
-# Ignore environment secrets
+# Ignore the .env file that contains sensitive data (API keys, tokens)
 .env
 
-# Ignore logs and temporary files
-*.log
-*.tmp
-*.swp
+# Ignore the SQLite database file (if using SQLite)
+user.db
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+__pycache__
+
+# Ignore virtual environments (if using a virtual environment for your project)
+venv/
+ENV/
+env/
+.venv/
+
+# Ignore IDE or editor-specific files
+.vscode/
+.idea/
+
+# Ignore system-specific files
 .DS_Store
 
-# Ignore PDFs or generated output
-*.pdf
+# Ignore log files
+*.log
