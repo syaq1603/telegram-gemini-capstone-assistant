@@ -7,7 +7,7 @@
 import os
 import requests
 from assistant import generate_financial_reply
-from file_handler import extract_text_from_file
+from handler import extract_text_from_file
 from dotenv import load_dotenv
 
 load_dotenv()
