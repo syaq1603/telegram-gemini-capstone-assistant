@@ -76,8 +76,13 @@ def telegram_page():
 
 @app.route("/start_telegram", methods=["POST"])
 def start_telegram():
+    # Set the webhook URL for your Telegram bot
     webhook_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/setWebhook?url={WEBHOOK_URL}/telegram"
+    
+    # Send a request to set the webhook
     response = requests.post(webhook_url, json={"url": WEBHOOK_URL, "drop_pending_updates": True})
+    
+    # Check if the webhook was successfully set and render the status
     status = "The telegram bot is running. Please check with the telegram bot." if response.status_code == 200 else "Failed to start the telegram bot."
     return render_template("telegram.html", status=status)
 
@@ -134,6 +139,3 @@ def send_telegram_message(chat_id, text):
 if __name__ == "__main__":
     print("✅ Flask is starting...")
     app.run(debug=True, port=5000)
-
-
-
