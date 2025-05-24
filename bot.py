@@ -1,47 +1,55 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, ContextTypes, filters
-from assistant import add_document, rag_ask
-from document_loader import extract_text
-from dotenv import load_dotenv
+# bot.py
+# Detect text messages
+# Handle uploaded PDF or image files
+# Respond using Gemini after extracting content
+# bot.py
+
 import os
-import tempfile
+import requests
+from assistant import generate_financial_reply
+from file_handler import extract_text_from_file
+from dotenv import load_dotenv
 
-# Load tokens
 load_dotenv()
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_TOKEN = os.getenv("GEMINI_TELEGRAM_TOKEN")
+TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
+FILE_API = f"https://api.telegram.org/file/bot{TELEGRAM_TOKEN}"
 
-# In-memory user doc state (per session)
-user_uploaded = {}
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hi! Upload a PDF or DOCX file, then ask your question.")
-
-async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle uploaded documents (PDF/DOCX)"""
-    file = await update.message.document.get_file()
-    filename = update.message.document.file_name
-
-    # Save to temp file
-    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{filename.split('.')[-1]}") as tmp:
-        await file.download_to_drive(tmp.name)
-        try:
-            text = extract_text(tmp.name)
-            add_document(text)
-            user_uploaded[update.message.from_user.id] = True
-            await update.message.reply_text("✅ Document received and processed. You can now ask questions!")
-        except Exception as e:
-            await update.message.reply_text(f"⚠️ Error: {str(e)}")
-
-async def handle_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle user questions after upload"""
-    uid = update.message.from_user.id
-    if not user_uploaded.get(uid):
-        await update.message.reply_text("❗Please upload a PDF or DOCX file first.")
+def handle_telegram_webhook(update):
+    if "message" not in update:
         return
 
-    question = update.message.text
-    try:
-        response = rag_ask(question)
-        await update.message.reply_text(response)
-    except Exception as e:
-        await update.
+    message = update["message"]
+    chat_id = message["chat"]["id"]
+
+    # Handle text messages
+    if "text" in message:
+        text = message["text"].strip()
+        if text.lower() == "generate pdf":
+            reply = "PDF generation is available via the web interface only."
+        else:
+            reply = generate_financial_reply(text, as_html=False)
+
+        send_message(chat_id, reply)
+
+    # Handle document or photo uploads
+    elif "document" in message or "photo" in message:
+        file_id = (message.get("document") or message.get("photo")[-1])["file_id"]
+        file_path = get_file_path(file_id)
+        file_url = f"{FILE_API}/{file_path}"
+
+        file_response = requests.get(file_url)
+        content_text = extract_text_from_file(file_response.content, file_path)
+        reply = generate_financial_reply(content_text, as_html=False)
+
+        send_message(chat_id, reply)
+
+def get_file_path(file_id):
+    res = requests.get(f"{TELEGRAM_API}/getFile?file_id={file_id}")
+    return res.json()["result"]["file_path"]
+
+def send_message(chat_id, text):
+    requests.post(
+        f"{TELEGRAM_API}/sendMessage",
+        data={"chat_id": chat_id, "text": text}
+    )
