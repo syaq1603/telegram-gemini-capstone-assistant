@@ -9,6 +9,12 @@ import requests
 # Set the correct public URL for ngrok
 WEBHOOK_URL = "https://c4c1-118-200-144-21.ngrok-free.app"  # Use your ngrok URL here
 
+from dotenv import load_dotenv
+load_dotenv()
+
+# Access the new token
+bot_token = os.getenv("GEMINI_TELEGRAM_TOKEN")
+
 # Initialize the Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -113,14 +119,26 @@ def logout():
 
 @app.route("/telegram", methods=["POST"])
 def telegram():
-    update = request.get_json()
-    
-    # Log the incoming request to see the structure
-    print(f"Received update: {update}")
-    
-    handle_telegram_webhook(update)
-    
-    return "ok", 200
+    try:
+        # Get the incoming update from Telegram
+        update = request.get_json()
+
+        # Log the incoming update for debugging purposes
+        print(f"Received update: {update}")
+
+        # Process the update (for example, handle the message)
+        handle_telegram_webhook(update)
+
+        # Return a 200 OK response to Telegram
+        return "ok", 200
+
+    except Exception as e:
+        # Log any errors that occur while processing the update
+        print(f"Error processing update: {e}")
+
+        # Return a 500 error to Telegram if something goes wrong
+        return "Error", 500
+
 
 def handle_telegram_webhook(update):
     """Handles incoming Telegram messages and sends responses."""
