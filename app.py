@@ -111,7 +111,13 @@ def logout():
 @app.route("/telegram", methods=["POST"])
 def telegram():
     update = request.get_json()
+    
+    # Log the incoming request to see the structure
+    print(f"Received update: {update}")
+    
+    # Handle the webhook data
     handle_telegram_webhook(update)
+    
     return "ok", 200
 
 def handle_telegram_webhook(update):
@@ -130,22 +136,23 @@ def handle_telegram_webhook(update):
         print(f"Error processing update: {e}")
 
 def generate_telegram_reply(message):
-    """Generates a reply based on the user message."""
-    # You can add custom logic here to handle different types of messages
+    print(f"Generating response for message: {message}")
+    
+    # Simple reply for testing
     if "hello" in message.lower():
         return "Hello! How can I assist you today?"
     else:
         return f"You said: {message}"
 
 def send_telegram_message(chat_id, text):
-    """Sends a message to the specified chat ID."""
     telegram_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/sendMessage"
     payload = {'chat_id': chat_id, 'text': text}
+    
+    # Send the message to Telegram
     response = requests.post(telegram_url, data=payload)
 
+    # Debugging: Check the response from Telegram
     if response.status_code != 200:
-        print(f"Failed to send message: {response.text}")
-
-if __name__ == "__main__":
-    print("✅ Flask is starting...")
-    app.run(debug=True, port=5000)
+        print(f"Error sending message: {response.text}")
+    else:
+        print(f"Successfully sent message: {text} to chat_id: {chat_id}")
