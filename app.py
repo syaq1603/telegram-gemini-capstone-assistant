@@ -16,7 +16,7 @@ app.secret_key = "replace_this_with_a_secure_key"
 def index():
     return render_template("index.html")
 
-@app.route("/main", methods=["POST"])
+@app.route("/main", methods=["GET", "POST"])
 def main():
     name = request.form.get("name")
     if not name:
