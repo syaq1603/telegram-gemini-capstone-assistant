@@ -44,9 +44,7 @@ def generate_telegram_reply(message):
         print(f"Generating response for message: {message}")
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": message}
-            ]
+            messages=[{"role": "user", "content": message}]
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
