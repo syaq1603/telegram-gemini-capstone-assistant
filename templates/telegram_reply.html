@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Financial Assistant - Telegram Bot Response</title>
+    <title>Financial Assistant - Telegram Bot Response</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Telegram Bot Response</h1>
         
-        <p><strong>Your question:</strong> {{ user_message }}</p>
-        <p><strong>Bot's Response:</strong> {{ bot_response }}</p>
+        <p><strong>Your Question:</strong> {{ user_message }}</p>
+        <p><strong>AI Response:</strong> {{ bot_response }}</p>
         
         <br>
         <form action="/start_telegram" method="post">
@@ -22,7 +22,7 @@
             <input type="submit" value="Stop Bot">
         </form>
         <br>
-        <form action="/home" method="post">
+        <form action="{{ url_for('home') }}" method="get">
             <input type="submit" value="Back to Home">
         </form>
     </div>
