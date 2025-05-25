@@ -13,22 +13,17 @@ def extract_text_from_pdf(file_bytes):
         str: The extracted text from the PDF file.
     """
     try:
-        # Read the PDF content from the byte data
-        pdf_reader = PyPDF2.PdfFileReader(io.BytesIO(file_bytes))
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(file_bytes))
         text = ""
-        
-        # Extract text from each page of the PDF
-        for page_num in range(pdf_reader.getNumPages()):
-            page = pdf_reader.getPage(page_num)
-            text += page.extractText()
-        
-        if not text:
-            return "No readable text found in PDF."
-        
-        return text
+
+        for page in pdf_reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text
+
+        return text.strip() if text else "No readable text found in PDF."
     except Exception as e:
         return f"Error extracting text from PDF: {e}"
-
 
 def extract_text_from_csv(file_bytes):
     """
@@ -39,16 +34,10 @@ def extract_text_from_csv(file_bytes):
         str: The extracted text from the CSV file.
     """
     try:
-        # Read the CSV content using pandas
         df = pd.read_csv(io.BytesIO(file_bytes))
-        
-        # Convert the dataframe to text format (could be adjusted based on the required format)
-        text = df.to_string(index=False)
-        
-        return text
+        return df.to_string(index=False)
     except Exception as e:
         return f"Error extracting text from CSV: {e}"
-
 
 def extract_text_from_image(file_bytes):
     """
@@ -59,27 +48,22 @@ def extract_text_from_image(file_bytes):
         str: The extracted text from the image.
     """
     try:
-        # Open the image using PIL and apply OCR using pytesseract
         image = Image.open(io.BytesIO(file_bytes))
         text = pytesseract.image_to_string(image)
-        
-        if not text:
-            return "No readable text found in image."
-        
-        return text
+        return text.strip() if text else "No readable text found in image."
     except Exception as e:
         return f"Error extracting text from image: {e}"
 
-
 def extract_text_from_file(file_bytes, filename):
     """
-    Extract text from various file types (PDF, CSV, Image, etc.).
+    Extract text from various file types (PDF, CSV, Image).
     Args:
         file_bytes (bytes): The byte content of the file.
         filename (str): The name of the uploaded file.
     Returns:
-        str: The extracted text from the file.
+        str: The extracted text or an error message.
     """
+    filename = filename.lower()
     if filename.endswith(".pdf"):
         return extract_text_from_pdf(file_bytes)
     elif filename.endswith(".csv"):
