@@ -1,5 +1,4 @@
 import os
-import requests
 import google.generativeai as genai  # Correct import for gemini
 from dotenv import load_dotenv
 from flask import Flask, request, render_template
@@ -7,7 +6,7 @@ from flask import Flask, request, render_template
 # Load environment variables from .env file
 load_dotenv()
 
-# Set up the Gemini API key
+# Set up the Gemini API key using the SDK
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Initialize Flask app
@@ -17,34 +16,16 @@ def generate_from_gemini(prompt):
     """
     Function to call Google Gemini API and generate a response based on the prompt.
     """
-    url = "https://generative-ai.googleapis.com/v1alpha1/models/gemini-1.5:generateText"  # Update URL if necessary
-    
-    headers = {
-        "Authorization": f"Bearer {os.getenv('GEMINI_API_KEY')}",
-        "Content-Type": "application/json"
-    }
-    
-    data = {
-        "input": {
-            "text": prompt
-        },
-        "params": {
-            "temperature": 0.7,  # You can adjust temperature based on required creativity
-            "maxOutputTokens": 100  # You can adjust the number of tokens for the response
-        }
-    }
-    
-    # Send a POST request to the Gemini API
-    response = requests.post(url, headers=headers, json=data)
-    
-    if response.status_code == 200:
-        # Extract the text response from the API response
-        result = response.json()
-        return result['output']['text']
-    else:
-        # Log the error in the console and return a user-friendly message
-        print(f"Error: {response.status_code} - {response.text}")
-        return "Sorry, there was an error connecting to the AI service."
+    try:
+        # Create a generative model instance
+        model = genai.GenerativeModel("gemini-1.5")  # Use the appropriate model, adjust if necessary
+        response = model.generate_content(prompt)  # Generate content using the model
+        print(f"Generated response: {response.text}")  # Debug: print the response
+        return response.text
+    except Exception as e:
+        # Handle any errors that occur during the API call
+        print(f"Error generating content from Gemini: {e}")
+        return f"Error generating content: {str(e)}"
 
 # Define route to handle incoming Telegram messages
 @app.route("/telegram", methods=["POST"])
@@ -95,7 +76,7 @@ def generate_telegram_reply(message):
             system_prompt = "You are a financial assistant. Answer finance-related questions."
             prompt = f"{system_prompt}\n\nUser Question: {message}"
 
-            # Call the function to get the AI response
+            # Call the function to get the AI response from Gemini
             ai_response = generate_from_gemini(prompt)
             print(f"AI Response: {ai_response}")
             return ai_response
