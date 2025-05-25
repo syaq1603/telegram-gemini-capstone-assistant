@@ -13,6 +13,7 @@ from handler import log_user_activity, sanitize_input
 
 # Load environment variables
 load_dotenv()
+print("🔐 OPENAI_API_KEY:", os.getenv("OPENAI_API_KEY")) 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
