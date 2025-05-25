@@ -1,4 +1,4 @@
-# Import Libraries
+# Import new libraries
 from flask import Flask, request, render_template
 from dotenv import load_dotenv
 import openai
