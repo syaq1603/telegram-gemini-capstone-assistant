@@ -1,5 +1,6 @@
 import os
 import requests
+import google.generativeai as genai  # Correct import for gemini
 from dotenv import load_dotenv
 from flask import Flask, request, render_template
 
