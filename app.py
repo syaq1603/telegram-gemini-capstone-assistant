@@ -1,63 +1,125 @@
+# Import Libraries
+from flask import Flask, request, render_template, jsonify
+from google.cloud import aiplatform
+from vertexai.generative_models import GenerativeModel
 import os
-import requests
-import google.generativeai as genai  # For later use when integrating Gemini
-from dotenv import load_dotenv
-from flask import Flask, request, render_template
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Set up the Gemini API key (optional for now)
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+import PyPDF2
+import docx
+import tempfile
+import json
+import logging
+import tempfile
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
-def generate_telegram_reply(message):
-    """
-    Simple function to handle basic messages.
-    Responds with 'Hello' if the user asks for it.
-    """
-    print(f"Generating response for message: {message}")
+# Flask logging for troubleshooting
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    # Respond to 'hello'
-    if "hello" in message.lower():
-        return "Hello! How can I assist you today?"
-    else:
-        return "Sorry, I don't understand that. Ask me something about finance."
+# Configure Google Cloud credentials
+#GOOGLE_APPLICATION_CREDENTIALS = "/etc/secrets/google-credentials.json"
+gcp_project = os.environ["GOOGLE_PROJECT"] 
+gen_location = os.environ["GOOGLE_LOCATION"]
+gen_model = os.environ["GOOGLE_GEN_MODEL"]
 
-# Define route to handle incoming Telegram messages
-@app.route("/telegram", methods=["POST"])
-def telegram():
-    update = request.get_json()
-    handle_telegram_webhook(update)
-    return "ok", 200
+# Initialize Vertex AI
+aiplatform.init(project=gcp_project, location=gen_location)
 
-def handle_telegram_webhook(update):
-    """Handles incoming Telegram messages and sends responses."""
-    try:
-        chat_id = update['message']['chat']['id']
-        user_message = update['message']['text']
-        print(f"Received message: {user_message} from chat_id: {chat_id}")
+# Initialize model
+model = GenerativeModel(gen_model)
 
-        # Generate a response for the received message
-        response = generate_telegram_reply(user_message)
-        send_telegram_message(chat_id, response)
-    except Exception as e:
-        print(f"Error processing update: {e}")
+def get_chat_response(prompt: str) -> str:
+    # Create a new chat session for each request
+    chat_session = model.start_chat()
+    response = chat_session.send_message(prompt)
+    return response.text
 
-# Function to send messages back to Telegram
-def send_telegram_message(chat_id, text):
-    telegram_url = f"https://api.telegram.org/bot{os.getenv('GEMINI_TELEGRAM_TOKEN')}/sendMessage"
-    payload = {'chat_id': chat_id, 'text': text}
+def read_file_content(file):
+    """Extract text from various file formats"""
+    filename = file.filename.lower()
+    content = ""
     
-    # Send the message to Telegram
-    response = requests.post(telegram_url, data=payload)
-    if response.status_code != 200:
-        print(f"Error sending message: {response.text}")
-    else:
-        print(f"Successfully sent message: {text} to chat_id: {chat_id}")
+    try:
+        if filename.endswith('.txt'):
+            content = file.read().decode('utf-8')
+        
+        elif filename.endswith('.pdf'):
+            # Save the uploaded file temporarily
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                file.save(temp_file.name)
+                
+            # Read PDF content
+            with open(temp_file.name, 'rb') as pdf_file:
+                pdf_reader = PyPDF2.PdfReader(pdf_file)
+                for page in pdf_reader.pages:
+                    content += page.extract_text()
+            
+            # Clean up temporary file
+            os.unlink(temp_file.name)
+        
+        elif filename.endswith(('.doc', '.docx')):
+            # Save the uploaded file temporarily
+            with tempfile.NamedTemporaryFile(delete=False, suffix=filename[-5:]) as temp_file:
+                file.save(temp_file.name)
+            
+            # Read DOC/DOCX content
+            doc = docx.Document(temp_file.name)
+            content = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+            
+            # Clean up temporary file
+            os.unlink(temp_file.name)
+        
+        else:
+            raise ValueError("Unsupported file format")
+        
+        return content.strip()
+    
+    except Exception as e:
+        raise Exception(f"Error reading file: {str(e)}")
 
-# Run the Flask app locally
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        prompt = request.form['prompt']
+        if prompt:
+            try:
+                response = get_chat_response(prompt)
+                return {'status': 'success', 'response': response}
+            except Exception as e:
+                return {'status': 'error', 'response': str(e)}
+    return render_template('index.html')
+
+@app.route('/analyze_file', methods=['POST'])
+def analyze_file():
+    try:
+        if 'file' not in request.files:
+            return {'status': 'error', 'response': 'No file uploaded'}
+        
+        file = request.files['file']
+        prompt = request.form.get('prompt', '')
+        
+        if file.filename == '':
+            return {'status': 'error', 'response': 'No file selected'}
+        
+        # Extract text from file
+        file_content = read_file_content(file)
+        
+        # Create prompt with file content
+        full_prompt = f"""
+        Analyze the following text and answer the question: {prompt}
+
+        Text content:
+        {file_content}
+        """
+        
+        # Get response from Gemini
+        response = get_chat_response(full_prompt)
+        
+        return {'status': 'success', 'response': response}
+    
+    except Exception as e:
+        return {'status': 'error', 'response': str(e)}
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", debug=True)
