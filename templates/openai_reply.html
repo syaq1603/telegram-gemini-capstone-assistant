@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Response - FINANCIAL ADVISOR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Response</h1>
+
+        <div class="content">
+            {% if file_text %}
+                <h2>Extracted Document Content:</h2>
+                <p>{{ file_text }}</p>
+                <hr>
+            {% endif %}
+
+            <h2>Assistant's Response:</h2>
+            <p>{{ r }}</p>
+        </div>
+
+        <br>
+        <a href="{{ url_for('home') }}">Ask Another Question</a>
+        <br><br>
+        <a href="{{ url_for('telegram_page') }}">Manage Telegram Bot</a>
+    </div>
+</body>
+</html>
