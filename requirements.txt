@@ -7,7 +7,7 @@ pandas==1.4.2
 requests==2.32.3
 python-dotenv==0.19.2
 gunicorn==20.1.0  # Required for deploying to Heroku
-google-generativeai==1.16.1
+google-generativeai==0.8.5  # Use the version you installed
 httpx==0.23.3
 urllib3==2.4.0
 
