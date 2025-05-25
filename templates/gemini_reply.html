@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Financial Assistant - Response</title>
+    <title>Financial Assistant - Response</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Gemini's Response</h1>
+        <h1>AI Response</h1>
 
         <div class="content">
             <!-- Display the extracted document content if any -->
@@ -18,17 +18,18 @@
             {% endif %}
 
             <!-- Display the AI-generated financial response -->
-            <h2>Gemini's Response:</h2>
+            <h2>AI Response:</h2>
             <p>{{ r }}</p>
         </div>
 
         <br>
         <!-- Link to go back to ask another question or upload a document -->
-        <a href="/gemini">Ask Another Question</a> 
+        <a href="{{ url_for('home') }}">Ask Another Question</a> 
 
         <br><br>
         <!-- Link to manage the Telegram bot -->
-        <a href="/telegram_page">Manage Telegram Bot</a>
+        <a href="{{ url_for('telegram_page') }}">Manage Telegram Bot</a>
     </div>
 </body>
 </html>
+
