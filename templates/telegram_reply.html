@@ -1,0 +1,52 @@
+import os
+import requests
+
+def generate_telegram_reply(message):
+    print(f"Generating response for message: {message}")
+
+    # Basic responses for simple queries
+    if "hello" in message.lower():
+        return "Hello! How can I assist you today?"
+    
+    elif "inflation" in message.lower():
+        return "Inflation is the rate at which the general level of prices for goods and services rises, and subsequently, the purchasing power of currency falls."
+    
+    # Example: Handling a finance-related question (you can add more conditions as needed)
+    elif "stocks" in message.lower():
+        return "Stocks represent ownership in a company and constitute a claim on part of the company’s assets and earnings."
+    
+    # Use AI (Google Gemini or other model) to generate a more complex response
+    else:
+        try:
+            # Here, replace this with your actual model integration (e.g., Google Gemini or GPT model)
+            system_prompt = "You are a financial assistant. Answer finance-related questions."
+            prompt = f"{system_prompt}\n\nUser Question: {message}"
+
+            # Call to your AI model (replace this with actual model integration logic)
+            ai_response = generate_from_gemini(prompt)
+            
+            # Log the AI response for debugging
+            print(f"AI Response: {ai_response}")
+
+            return ai_response
+
+        except Exception as e:
+            print(f"Error generating AI response: {e}")
+            return "Sorry, I couldn't process that request. Please try again."
+
+def generate_from_gemini(prompt):
+    """
+    Function to interact with the AI model (Google Gemini or similar).
+    Replace this with the actual API call or model interaction.
+    """
+    # Example placeholder for Gemini API call (replace with actual code)
+    # Assuming `gemini_client` is an instance of the API client
+    try:
+        response = gemini_client.models.generate_content(
+            model="your_model_name",  # Your model name here
+            contents=prompt
+        )
+        return response.text
+    except Exception as e:
+        print(f"Error generating content from Gemini: {e}")
+        return "Sorry, there was an error connecting to the AI service."
