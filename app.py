@@ -1,10 +1,12 @@
+from google import genai
 import os
-import requests
 from dotenv import load_dotenv
-from flask import Flask, request, render_template
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
+
+# Set up the API key
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Initialize Flask app
 app = Flask(__name__)
