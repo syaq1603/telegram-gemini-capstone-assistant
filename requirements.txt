@@ -2,7 +2,7 @@ flask
 gunicorn
 flask-cors
 python-dotenv
-openai
+openai==0.28.1
 python-docx
 PyPDF2
 pytesseract
