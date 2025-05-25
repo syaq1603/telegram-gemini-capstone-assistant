@@ -13,6 +13,8 @@ from handler import log_user_activity, sanitize_input
 
 # Load environment variables
 load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='static')
