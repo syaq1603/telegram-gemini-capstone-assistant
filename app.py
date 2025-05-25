@@ -35,7 +35,7 @@ def get_chat_response(prompt: str) -> str:
         return response.choices[0].message.content.strip()
     except Exception as e:
         logger.error(f"OpenAI API error: {e}")
-        return "Error generating response."
+        return f"OpenAI error: {e}"
 
 def read_file_content(file):
     """Extract text from various file formats"""
