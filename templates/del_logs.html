@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logs Deleted - FIN ADVISOR</title>
+    <title>Logs Deleted - FINANCIAL ADVISOR</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -13,10 +13,9 @@
 
         <br>
 
-        <a href="/logs">View Logs</a> <!-- Link to view the logs (if any new logs are added) -->
-
+        <a href="{{ url_for('logs') }}">View Logs</a>
         <br><br>
-        <a href="/gemini">Back to Main</a> <!-- Link to go back to the main page -->
+        <a href="{{ url_for('home') }}">Back to Financial Advisor</a>
     </div>
 </body>
 </html>
