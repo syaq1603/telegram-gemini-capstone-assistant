@@ -102,9 +102,8 @@ def analyze_file():
 
         file_content = read_file_content(file)
         full_prompt = f"{prompt}\n\nDocument Content:\n{file_content}"
-        log_user_activity("guest", f"Analyzed file: {file.filename}")
-        response = get_chat_response(full_prompt)
 
+        response = get_chat_response(full_prompt)
         return render_template("openai_reply.html", r=response, file_text=file_content)
 
     except Exception as e:
