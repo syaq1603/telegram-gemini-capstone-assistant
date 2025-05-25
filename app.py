@@ -148,7 +148,11 @@ def logs():
             return f"<pre>{log_file.read()}</pre>"
     except FileNotFoundError:
         return "No logs found."
+    
+@app.route("/debug-key")
+def debug_key():
+    import os
+    return f"OPENAI_API_KEY: {os.getenv('OPENAI_API_KEY')}"
 
-# ---------- Run the App ----------
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
