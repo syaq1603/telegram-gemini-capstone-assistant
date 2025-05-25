@@ -1,28 +1,25 @@
-from google import genai
 import os
+import requests
 from dotenv import load_dotenv
+from flask import Flask, request, render_template
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv()
 
-# Set up the API key
+# Set up the Gemini API key
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Define the API key for Google Gemini (stored in .env)
-API_KEY = os.getenv("GEMINI_API_KEY")
-
-# Function to interact with Google Gemini API
 def generate_from_gemini(prompt):
     """
     Function to call Google Gemini API and generate a response based on the prompt.
     """
-    url = "https://generative-ai.googleapis.com/v1alpha1/models/gemini-2.0:generateText"
+    url = "https://generative-ai.googleapis.com/v1alpha1/models/gemini-1.5:generateText"  # Update URL if necessary
     
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
+        "Authorization": f"Bearer {os.getenv('GEMINI_API_KEY')}",
         "Content-Type": "application/json"
     }
     
@@ -109,4 +106,3 @@ def generate_telegram_reply(message):
 # Run the Flask app locally
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
