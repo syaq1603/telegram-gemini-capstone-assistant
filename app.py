@@ -1,4 +1,4 @@
-# Import new libraries
+# Import new libraries and fix app.py
 from flask import Flask, request, render_template
 from dotenv import load_dotenv
 import openai
