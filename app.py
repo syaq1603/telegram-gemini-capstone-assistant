@@ -8,6 +8,9 @@ import docx
 import tempfile
 import logging
 
+from bot import handle_telegram_webhook, set_telegram_webhook, remove_telegram_webhook
+from handler import log_user_activity, sanitize_input
+
 # Load environment variables
 load_dotenv()
 
@@ -32,7 +35,7 @@ def get_chat_response(prompt: str) -> str:
         return response.choices[0].message.content.strip()
     except Exception as e:
         logger.error(f"OpenAI API error: {e}")
-        raise
+        return "Error generating response."
 
 def read_file_content(file):
     """Extract text from various file formats"""
@@ -69,7 +72,7 @@ def read_file_content(file):
         return content.strip()
 
     except Exception as e:
-        raise Exception(f"Error reading file: {str(e)}")
+        return f"Error reading file: {str(e)}"
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -77,11 +80,13 @@ def home():
         prompt = request.form['prompt']
         if prompt:
             try:
-                response = get_chat_response(prompt)
-                return {'status': 'success', 'response': response}
+                cleaned_prompt = sanitize_input(prompt)
+                log_user_activity("guest", "Asked a question")
+                response = get_chat_response(cleaned_prompt)
+                return render_template("openai_reply.html", r=response)
             except Exception as e:
-                return {'status': 'error', 'response': str(e)}
-    return render_template('index.html')
+                return render_template("openai_reply.html", r=f"Error: {str(e)}")
+    return render_template("ai_assistant.html")
 
 @app.route('/analyze_file', methods=['POST'])
 def analyze_file():
@@ -93,3 +98,55 @@ def analyze_file():
         prompt = request.form.get('prompt', '')
 
         if file.filename == '':
+            return {'status': 'error', 'response': 'No file selected'}
+
+        file_content = read_file_content(file)
+        full_prompt = f"{prompt}\n\nDocument Content:\n{file_content}"
+        log_user_activity("guest", f"Analyzed file: {file.filename}")
+        response = get_chat_response(full_prompt)
+
+        return render_template("openai_reply.html", r=response, file_text=file_content)
+
+    except Exception as e:
+        return render_template("openai_reply.html", r=f"Error: {str(e)}")
+
+@app.route('/telegram', methods=['POST'])
+def telegram_webhook():
+    update = request.get_json(force=True)
+    handle_telegram_webhook(update)
+    return "OK", 200
+
+@app.route('/start_telegram', methods=['POST'])
+def start_telegram():
+    response = set_telegram_webhook()
+    return render_template("telegram_reply.html", user_message="Bot Started", bot_response=response.text)
+
+@app.route('/stop_telegram', methods=['POST'])
+def stop_telegram():
+    response = remove_telegram_webhook()
+    return render_template("telegram_reply.html", user_message="Bot Stopped", bot_response=response.text)
+
+@app.route('/telegram_page')
+def telegram_page():
+    return render_template("telegram.html", status="Active")
+
+@app.route('/del_logs')
+def del_logs():
+    try:
+        if os.path.exists("user_activity.log"):
+            os.remove("user_activity.log")
+        return render_template("del_logs.html")
+    except Exception as e:
+        return f"Error deleting logs: {e}"
+
+@app.route('/logs')
+def logs():
+    try:
+        with open("user_activity.log", "r") as log_file:
+            return f"<pre>{log_file.read()}</pre>"
+    except FileNotFoundError:
+        return "No logs found."
+
+# ---------- Run the App ----------
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000, debug=True)
