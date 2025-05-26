@@ -30,13 +30,19 @@ def handle_telegram_webhook(update):
     try:
         chat_id = update['message']['chat']['id']
         user_message = update['message']['text']
-        print(f"Received message: {user_message} from chat_id: {chat_id}")
+
+        # Log the received message and chat ID
+        print("📩 Telegram webhook received!")
+        print(f"🔍 Chat ID: {chat_id}")
+        print(f"🗨️ Message: {user_message}")
 
         # Generate a response using OpenAI
         response = generate_telegram_reply(user_message)
         send_telegram_message(chat_id, response)
+
     except Exception as e:
-        print(f"Error processing update: {e}")
+        print(f"❌ Error processing Telegram message: {e}")
+
 
 def generate_telegram_reply(message):
     """Generate a financial response using OpenAI Chat API."""
