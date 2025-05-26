@@ -1,6 +1,6 @@
-# 💼 **FIN ADVISOR** (Web + Telegram Bot)
+# 💼 **FINANCIAL ADVISOR** (Web + Telegram Bot)
 
-This project is a **financial assistant** powered by **Google Gemini**, accessible via both a **Flask web interface** and a **Telegram bot**.
+An AI-powered financial assistant that integrates OpenAI for intelligent financial replies and connects with users through a Telegram bot. Built with Flask, this assistant can answer questions and analyze uploaded documents, deployed on Render.
 
 ### Users can:
 - 📊 Ask finance-related questions (markets, economics, investing).
@@ -9,7 +9,7 @@ This project is a **financial assistant** powered by **Google Gemini**, accessib
 - 🧾 Type "generate PDF" (via web) to export Gemini's reply.
 - 🔒 Use the Telegram bot to chat with Gemini on the go.
 
----
+-------------------------------------------------------------------------------------------------
 
 ## 🚀 How to Use
 
@@ -30,23 +30,107 @@ This project is a **financial assistant** powered by **Google Gemini**, accessib
 
 ---
 
-## 🧱 Frontend & Backend Overview
-
 ### 🎨 Frontend (Web Interface)
-- **HTML + Jinja2 templates**.
-- Pages include:
-  - `index.html`, `main.html`
-  - `gemini.html` (ask/upload)
-  - `gemini_reply.html` (response view)
-  - `logs.html`, `del_logs.html`, `telegram.html`
+Pages:
+
+`` — Ask a question or upload a document
+
+`` — Show AI response
+
+`` — Manage Telegram bot
+
+`` — View bot start/stop results
+
+`` — Confirm log deletion
+
+UI Features:
+
+- Simple interface for typing questions
+
+- Document upload form
+
+- Navigation to bot control
 
 ### 🧠 Backend (Shared)
-- **Flask app**: Handles routes, sessions, file uploads, and logs.
-- **Telegram webhook**: Configured to receive messages and file uploads.
-- **Google Gemini API**: Processes both questions and file content.
-- **SQLite**: Stores session details in `user.db`.
+🖥️ Backend: Flask API (OpenAI + Telegram)
 
----
+Key Features:
+
+- Handles routes:
+
+- / → Ask a financial question
+
+- /analyze_file → Upload file for analysis
+
+- /telegram → Webhook endpoint for Telegram bot
+
+- /start_telegram / /stop_telegram → Bot control
+
+- Uses OpenAI gpt-3.5-turbo for generating replies
+
+- Logs user activity (optional)
+
+Key Libraries:
+
+Flask, requests, openai, python-docx, PyPDF2, pytesseract, pillow
+-----------------------------------------------------------------
+
+🤖 Telegram Bot Integration
+
+Bot username: @tiabotbot
+
+Webhook endpoint: /telegram
+
+Accepts messages and replies using OpenAI
+
+Deployed and secured via Render environment
+
+Example:
+
+User: hello
+Bot: Hello! How can I assist you with finance today?
+
+🚀 Deployment on Render
+
+🔧 Setup:
+
+Create a new Web Service on Render
+
+Connect to GitHub repo
+
+Add environment variables:
+
+OPENAI_API_KEY=sk-...
+TELEGRAM_BOT_TOKEN=...
+WEBHOOK_URL=https://your-render-url.onrender.com
+
+Start Command:
+
+gunicorn app:app
+
+🌍 Set Telegram Webhook
+
+curl -X POST "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook?url=<WEBHOOK_URL>/telegram"
+
+📝 .env Template
+
+OPENAI_API_KEY=sk-...
+TELEGRAM_BOT_TOKEN=...
+WEBHOOK_URL=https://your-render-url.onrender.com
+
+**Never commit **`` to GitHub.
+
+🧪 Testing & Logs
+
+Use Render Logs for webhook requests
+
+Print statements log:
+
+Received messages
+
+Chat IDs
+
+OpenAI responses
 
 ## ⚙️ Requirements
 
@@ -61,20 +145,19 @@ pip install -r requirements.txt
 
 ```
 ## File Structure
-fin_advisor/
-├── app.py
-├── bot.py
-├── assistant.py
-├── handler.py
-├── document_loader.py
-├── requirements.txt
-├── Procfile
-├── .env
-├── templates/
-│   ├── index.html
-│   ├── gemini.html
-│   ├── gemini_reply.html
-│   ├── logs.html
-│   ├── del_logs.html
+telegram_gemini_capstone_assistant/
+├── app.py                  # Main Flask app entry point
+├── bot.py                  # Telegram bot webhook handler
+├── handler.py              # Input sanitization, file validators, logging
+├── document_loader.py      # File reading: PDF, CSV, Images (OCR)
+├── requirements.txt        # Python dependencies
+├── Procfile                # For Render deployment
+├── .env                    # Environment variables (not committed)
+├── user.db                 # SQLite log (optional)
+├── templates/              # HTML templates
+│   ├── ai_assistant.html
+│   ├── openai_reply.html
 │   ├── telegram.html
-│   └── main.html
+│   ├── telegram_reply.html
+│   └── del_logs.html
+└── static/                 # CSS/JS assets
