@@ -145,6 +145,7 @@ pip install -r requirements.txt
 
 ```
 ## File Structure
+
 telegram_gemini_capstone_assistant/
 ├── app.py                  # Main Flask app entry point
 ├── bot.py                  # Telegram bot webhook handler
@@ -162,4 +163,7 @@ telegram_gemini_capstone_assistant/
 │   └── del_logs.html
 └── static/                 # CSS/JS assets
 
-Made with love.
+
+
+This project was created as part of the DSAI Capstone.  
+Made with ❤️ and OpenAI by Rubiyah Biamin._
