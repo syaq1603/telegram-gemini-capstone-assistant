@@ -161,3 +161,5 @@ telegram_gemini_capstone_assistant/
 │   ├── telegram_reply.html
 │   └── del_logs.html
 └── static/                 # CSS/JS assets
+
+Made with love.
