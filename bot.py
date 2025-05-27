@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 print("🔐 OPENAI_API_KEY:", os.getenv("OPENAI_API_KEY")) 
+
 # Set OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -25,6 +26,16 @@ def remove_telegram_webhook():
     print(f"Webhook removed response: {response.text}")
     return response
 
+def is_finance_question(text):
+    """Check if the message is finance-related."""
+    keywords = [
+        "finance", "investment", "stock", "share", "market", "inflation",
+        "interest", "portfolio", "dividend", "bond", "economy", "gold",
+        "cryptocurrency", "crypto", "trading", "return", "risk", "currency"
+    ]
+    text = text.lower()
+    return any(word in text for word in keywords)
+
 def handle_telegram_webhook(update):
     """Handles incoming Telegram messages and sends responses."""
     try:
@@ -36,13 +47,16 @@ def handle_telegram_webhook(update):
         print(f"🔍 Chat ID: {chat_id}")
         print(f"🗨️ Message: {user_message}")
 
-        # Generate a response using OpenAI
-        response = generate_telegram_reply(user_message)
+        # Filter for finance-related topics
+        if is_finance_question(user_message):
+            response = generate_telegram_reply(user_message)
+        else:
+            response = "⚠️ I'm only able to help with questions related to finance, investing, economics, and financial markets."
+
         send_telegram_message(chat_id, response)
 
     except Exception as e:
         print(f"❌ Error processing Telegram message: {e}")
-
 
 def generate_telegram_reply(message):
     """Generate a financial response using OpenAI Chat API."""
@@ -65,4 +79,4 @@ def send_telegram_message(chat_id, text):
     if response.status_code != 200:
         print(f"Error sending message: {response.text}")
     else:
-        print(f"Successfully sent message to chat_id {chat_id}: {text}")
+        print(f"✅ Successfully sent message to chat_id {chat_id}: {text}")
