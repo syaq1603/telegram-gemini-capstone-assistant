@@ -20,15 +20,13 @@ An AI-powered financial assistant that integrates OpenAI for intelligent financi
 4. View the extracted content and Gemini’s response.
 
 ### 💬 Telegram Bot
-1. Open Telegram and search for your bot (e.g., `@your_bot_name`).
+1. Open Telegram and search for your bot (e.g., `@ytiabotbot`).
 2. Send a message like:  
    > What is inflation?
 3. Or upload a document (PDF, CSV, or image).
 4. The bot replies with an AI-generated financial answer.
 
 > Telegram handles both text and file input, routed through a **webhook**.
-
----
 
 ### 🎨 Frontend (Web Interface)
 Pages:
@@ -166,4 +164,4 @@ telegram_gemini_capstone_assistant/
 
 
 This project was created as part of the DSAI Capstone.  
-Made with ❤️ and OpenAI by Rubiyah Biamin._
+Made with ❤️ and OpenAI by Rubiyah Biamin.
