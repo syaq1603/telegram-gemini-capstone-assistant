@@ -136,7 +136,7 @@ OpenAI responses
 
 - Python 3.8+
 - A **Telegram bot token** (via [@BotFather](https://t.me/botfather)).
-- **Google Gemini API key**.
+- **OPENAI_API_KEYy**.
 
 ### Install dependencies
 
