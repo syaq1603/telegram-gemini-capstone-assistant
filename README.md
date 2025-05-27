@@ -144,22 +144,7 @@ pip install -r requirements.txt
 ```
 ## File Structure
 
-telegram_gemini_capstone_assistant/
-├── app.py                  # Main Flask app entry point
-├── bot.py                  # Telegram bot webhook handler
-├── handler.py              # Input sanitization, file validators, logging
-├── document_loader.py      # File reading: PDF, CSV, Images (OCR)
-├── requirements.txt        # Python dependencies
-├── Procfile                # For Render deployment
-├── .env                    # Environment variables (not committed)
-├── user.db                 # SQLite log (optional)
-├── templates/              # HTML templates
-│   ├── ai_assistant.html
-│   ├── openai_reply.html
-│   ├── telegram.html
-│   ├── telegram_reply.html
-│   └── del_logs.html
-└── static/                 # CSS/JS assets
+<pre> <code> telegram_gemini_capstone_assistant/ ├── app.py # Main Flask app entry point ├── bot.py # Telegram bot webhook handler ├── handler.py # Input sanitization, file validators, logging ├── document_loader.py # File reading: PDF, CSV, Images (OCR) ├── requirements.txt # Python dependencies ├── Procfile # For Render deployment ├── .env # Environment variables (not committed) ├── user.db # SQLite log (optional) ├── templates/ # HTML templates │ ├── ai_assistant.html │ ├── openai_reply.html │ ├── telegram.html │ ├── telegram_reply.html │ └── del_logs.html └── static/ # CSS/JS assets </code> </pre>
 
 
 
